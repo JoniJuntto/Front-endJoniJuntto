@@ -2,6 +2,7 @@ import './App.css';
 import RecipeList from './RecipeList';
 import React, { useState } from 'react';
 import { Typography, TextField, Button } from '@material-ui/core';
+import axios from 'axios';
 
 
 
@@ -38,36 +39,29 @@ function Etusivu(props) {
         getRecipes();
 
     }
-//
-//https://webhook.site/762fdc81-e58a-438c-b308-ae2f578ff035
-    const postData = async () =>{
-        try{
-
-            let result = await fetch('http://localhost:5000/haku/add',{
-                method: 'post',
-                mode: 'no-cors',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    teksti: haku
-                })
-            });
-
-            console.log('resp: ' + result);
-
-        }catch(e){
-            console.log(e);
-        }
-    }
 
     const lisaaHaku = (e) => {
         e.preventDefault();
-        getRecipes();
-        postData();
 
-    }
+        getRecipes();
+        
+        const formData = {
+            teksti: haku.teksti
+          }
+    
+
+
+    axios.post('http://localhost:5000/haku/add', formData)
+    .then(response => {
+        if (response.status === 200) {
+            setHaku({
+                teksti: ''
+            });
+            setViesti('Lisättiin');
+        } else {
+            setViesti('Lisäys ei onnistunut');
+          }
+    })}
 
 
     const tyhjenna = (e) => {
