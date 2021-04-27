@@ -25,7 +25,7 @@ function SearchList(props) {
             const response = await
                 fetch('http://localhost:5000/haku/all');
             const json = await response.json();
-            console.log(JSON)
+            console.log(json)
             setHaut(json);
             setVirhe('');
         } catch (error) {
@@ -44,7 +44,13 @@ function SearchList(props) {
        }
     
        if (haut.length > 0) {
-         return ( <List haut={ haut } /> );
+           console.log(haut);
+        return (
+            haut.map((haku) =>
+                <div className={classes.root}>
+                    <li>{haku.teksti}</li>
+                </div>)
+        );
        }
     
        return ( <Typography>Yhtään matkaa ei ole</Typography> );

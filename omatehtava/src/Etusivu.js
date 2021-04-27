@@ -10,12 +10,14 @@ function Etusivu(props) {
 
 
     const [recipes, setRecipes] = useState([]);
-    const [haku, setHaku] = useState({teksti: ''});
+    const [haku, setHaku] = useState('');
     const [viesti, setViesti] = useState('');
+    const [objekti, setObjekti] = useState({haku: ''});
     var value = '';
 
     const getRecipes = async () => {
         value = haku;
+        setObjekti({...objekti, haku: value});
         const url = 'http://www.recipepuppy.com/api/?i=' + value;
 
         try {
@@ -32,13 +34,7 @@ function Etusivu(props) {
     const handleChange = e => {
         setHaku(e.target.value)
     };
-
-    const onSubmit = (data) => {
-        value = data.search;
-        getRecipes();
-
-    }
-//
+//http://localhost:5000/haku/add
 //https://webhook.site/762fdc81-e58a-438c-b308-ae2f578ff035
     const postData = async () =>{
         try{
@@ -51,9 +47,10 @@ function Etusivu(props) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    teksti: haku
+                    objekti: objekti
                 })
             });
+            console.log(haku);
 
             console.log('resp: ' + result);
 
@@ -66,17 +63,13 @@ function Etusivu(props) {
         e.preventDefault();
         getRecipes();
         postData();
+        tyhjenna();
 
     }
 
 
-    const tyhjenna = (e) => {
-        e.preventDefault();
-    
-        setHaku({
-            teksti: ''
-        });
-    
+    const tyhjenna = () => {
+        setHaku('');    
         setViesti('');
       }
 
@@ -94,9 +87,8 @@ function Etusivu(props) {
       </Typography>
 
             <div style={{ marginTop: 50, marginBottom: 60 }}>
-                <TextField value={haku.teksti} variant='outlined' onChange={handleChange} />
+                <TextField value={haku} variant='outlined' onChange={handleChange} />
                 <Button style={{ marginTop: 8, marginLeft: 6 }} onClick={(e) => lisaaHaku(e)} variant='contained'>Hae </Button>
-                <Button onClick={ (e) => tyhjenna(e) } variant='contained' color='secondary'>Tyhjennä</Button>
             </div>
             <div style={{ marginLeft: 70, marginRight: 30 }}>
                 <RecipeList recipes={recipes} />
